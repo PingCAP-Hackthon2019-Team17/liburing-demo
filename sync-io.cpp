@@ -17,9 +17,9 @@ using namespace std;
 #define BUF_SIZE 1024
 char buffer[BUF_SIZE];
 
-int bench_write(){
+int bench_write(char* out){
     int outfd;
-    outfd = open("sync-file.out", O_WRONLY|O_CREAT|O_TRUNC|O_APPEND, 0644);
+    outfd = open(out, O_WRONLY|O_CREAT|O_TRUNC|O_APPEND, 0644);
 
     int limit_size = BUF_SIZE *1024;
     int offset = 0;
@@ -46,13 +46,20 @@ int bench_write(){
     return 0;
 }
 
-int main(){
+int main(int argc, char* argv[]){
+
+    if (argc != 2){
+        printf("%s outfile", argv[0]);
+        return 1;
+    }
+    char* out = argv[1];
+
     // memset the buffer to '1'*1024
     memset(buffer, '1', sizeof(buffer)/sizeof(char));
 
     clock_t begin = clock();
     cout << "start the bench write" << endl;
-    if(bench_write()){
+    if(bench_write(out)){
         cout << "bench write error" << endl;
         return 1;
     }

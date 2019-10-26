@@ -30,10 +30,10 @@ static int setup_context(unsigned entries, struct io_uring *ring)
 	return 0;
 }
 
-int bench_write(){
+int bench_write(char* out){
     int outfd;
     struct io_uring ring;
-    outfd = open("uring-file.out", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    outfd = open(out, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
     if(setup_context(QD, &ring)){
         return 1;
@@ -68,6 +68,7 @@ int bench_write(){
                 printf("wait cqe: %s\n", strerror(ret));
                 return 1;
             }
+            io_uring_cqe_seen(&ring, cqe);
         }
 
         // advance the offset.
@@ -77,13 +78,19 @@ int bench_write(){
     return 0;
 }
 
-int main(){
+int main(int argc, char* argv[]){
+    if(argc !=2){
+        printf("%s outfile", argv[0]);
+        return 1;
+    }
+    char* out = argv[1];
+
     // memset the buffer to '1' * 1024
     memset(buffer, '1', sizeof(buffer)/sizeof(char));
 
     clock_t begin = clock();
     cout << "start the bench write"<< endl;
-    if(bench_write()){
+    if(bench_write(out)){
         cout << "bench write error" << endl;
         return 1;
     }
