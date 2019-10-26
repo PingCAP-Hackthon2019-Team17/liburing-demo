@@ -95,6 +95,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
     clock_t end = clock();
-    cout << "End the uring-async write & sync bench write: " << (end - begin) << "(ms)" << endl;
+    cout << "End the uring-async write & sync bench write: "
+         << (double)(end - begin) / (double)CLOCKS_PER_SEC << "(sec)" << endl;
     return 0;
 }

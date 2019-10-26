@@ -64,6 +64,7 @@ int main(int argc, char* argv[]){
         return 1;
     }
     clock_t end = clock();
-    cout << "End the native write & fdatasync bench write: " << (end - begin) << "(ms)" << endl;
+    cout << "End the native write & fdatasync bench write: "
+         << (double)(end - begin) / (double)CLOCKS_PER_SEC << "(sec)" << endl;
     return 0;
 }
